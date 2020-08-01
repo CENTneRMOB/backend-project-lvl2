@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
-import Command from 'commander';
+import command from 'commander';
 
-const { program } = Command;
+const program = command;
+
 program
   .version('0.1.0')
   .description('Compares two configuration files and shows a difference.');
