@@ -33,12 +33,12 @@ jobs:
       env:
         CI: true
     - name: Test & publish code coverage
-        # Publish code coverage on Code Climate
-        # https://github.com/paambaati/codeclimate-action
-        uses: paambaati/codeclimate-action@v2.6.0
-        # Add Code Climate secret key
-        env:
-          TEST_REPORTER_ID_CODE_CLIMATE: ${{ secrets.TEST_REPORTER_ID_CODE_CLIMATE }}
-        with:
-          coverageCommand: make test-coverage
-          debug: true
+      # Publish code coverage on Code Climate
+      # https://github.com/paambaati/codeclimate-action
+      uses: paambaati/codeclimate-action@v2.6.0
+      # Add Code Climate secret key
+      env:
+        TEST_REPORTER_ID_CODE_CLIMATE: ${{ secrets.TEST_REPORTER_ID_CODE_CLIMATE }}
+      with:
+        coverageCommand: make test-coverage
+        debug: true
