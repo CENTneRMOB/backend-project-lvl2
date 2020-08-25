@@ -1,5 +1,7 @@
 import fs from 'fs';
 import _ from 'lodash';
+import path from 'path';
+import getParser from './parsers.js';
 
 const ADD = 'add';
 const REMOVE = 'remove';
@@ -9,8 +11,10 @@ const CHANGED = 'changed';
 const genDiff = (filePath1, filePath2) => {
   const content1 = fs.readFileSync(filePath1, 'utf-8');
   const content2 = fs.readFileSync(filePath2, 'utf-8');
-  const obj1 = JSON.parse(content1);
-  const obj2 = JSON.parse(content2);
+  const fileExtname = path.extname(filePath1);
+  const parse = getParser(fileExtname);
+  const obj1 = parse(content1);
+  const obj2 = parse(content2);
 
   const keysOfObj1 = Object.keys(obj1);
   const keysOfObj2 = Object.keys(obj2);

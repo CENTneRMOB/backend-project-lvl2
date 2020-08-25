@@ -1,0 +1,21 @@
+---
+plugins:
+  eslint
+
+node:
+  true
+
+no-console:
+  1
+
+host:
+  hexlet.io
+
+timeout:
+  20
+
+follow:
+  true
+
+verbose:
+  true
