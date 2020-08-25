@@ -15,7 +15,6 @@ describe('JSON test group', () => {
   const expectedContent = fs.readFileSync(expectedFilePath, 'utf-8');
 
   test('Files format should be JSON and both file formats should be equal', () => {
-
     expect(firstFileFormat).toBe('.json');
     expect(secondFileFormat).toBe('.json');
     expect(firstFileFormat === secondFileFormat).toBeTruthy();
