@@ -1,6 +1,11 @@
 {
   - follow: false
     host: hexlet.io
+  - no-console: 0
+  + no-console: 1
+    node: true
+  - plugins: jest
+  + plugins: eslint
   - proxy: 123.234.53.22
   - timeout: 50
   + timeout: 20

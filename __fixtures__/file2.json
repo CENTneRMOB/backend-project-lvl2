@@ -1,5 +1,8 @@
 {
   "timeout": 20,
+  "plugins": "eslint",
+  "node": "true",
+  "no-console": 1,
   "verbose": true,
   "host": "hexlet.io"
 }

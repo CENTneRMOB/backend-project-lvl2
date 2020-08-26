@@ -14,8 +14,5 @@ host:
 timeout:
   20
 
-follow:
-  true
-
 verbose:
   true
