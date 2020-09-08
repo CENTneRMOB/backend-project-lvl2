@@ -22,9 +22,4 @@ describe.each([['file1.json', 'file2.json', '.json'], ['file1.yaml', 'file2.yaml
   test(`Should return difference between two '${format}' files`, () => {
     expect(genDiff(firstFilePath, secondFilePath)).toBe(expectedContent);
   });
-
-  test('Result file shoud be truthy and defined', () => {
-    expect(genDiff(firstFilePath, secondFilePath)).toBeTruthy();
-    expect(genDiff(firstFilePath, secondFilePath)).toBeDefined();
-  });
 });
