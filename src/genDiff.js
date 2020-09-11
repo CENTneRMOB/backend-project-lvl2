@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import getContent from './parsers.js';
-import stylish from './formatters/stylish.js';
+import formatter from './formatters/index.js';
 
 const markers = {
   ADD: 'add',
@@ -41,7 +41,8 @@ const makeDiff = (obj1, obj2) => {
   return mappedKeys;
 };
 
-export default (filePath1, filePath2) => {
+export default (filePath1, filePath2, outputFormat) => {
   const [obj1, obj2] = getContent(filePath1, filePath2);
-  return stylish(makeDiff(obj1, obj2));
+  const diff = makeDiff(obj1, obj2);
+  return formatter(diff, outputFormat);
 };

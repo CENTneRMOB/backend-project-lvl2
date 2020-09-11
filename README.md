@@ -15,3 +15,7 @@
 [INI using case](https://asciinema.org/a/356117 "GenDiff using case with INI files")
 
 [Branched files using case](https://asciinema.org/a/358552 "Branched files")
+
+[Stylish output using case](https://asciinema.org/a/359210 "Stylish")
+
+[Plain output using case](https://asciinema.org/a/359211 "Plain")
