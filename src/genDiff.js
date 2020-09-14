@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import getContent from './parsers.js';
+import getContent from './parsers/index.js';
 import formatter from './formatters/index.js';
 
 const markers = {

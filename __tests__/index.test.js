@@ -5,8 +5,10 @@ import genDiff from '../index.js';
 const fixturesPath = path.resolve('./__fixtures__');
 const stylishResultFilePath = path.join(fixturesPath, 'stylish.result');
 const plainResultFilePath = path.join(fixturesPath, 'plain.result');
+const jsonResultFilePath = path.join(fixturesPath, 'json.result');
 const stylishExpectedContent = fs.readFileSync(stylishResultFilePath, 'utf-8');
 const plainExpectedContent = fs.readFileSync(plainResultFilePath, 'utf-8');
+const jsonExpectedContent = fs.readFileSync(jsonResultFilePath, 'utf-8');
 
 const beforeFileName = 'file1';
 const afterFileName = 'file2';
@@ -31,5 +33,8 @@ describe.each([['.json'], ['.yaml'], ['.ini']])('Test block', (extension) => {
   });
   test(`Should return difference between two ${extension} in plain format`, () => {
     expect(genDiff(firstFilePath, secondFilePath, 'plain')).toBe(plainExpectedContent);
+  });
+  test(`Should return difference between two ${extension} in json format`, () => {
+    expect(genDiff(firstFilePath, secondFilePath, 'json')).toBe(jsonExpectedContent);
   });
 });

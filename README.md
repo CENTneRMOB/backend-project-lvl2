@@ -19,3 +19,5 @@
 [Stylish output using case](https://asciinema.org/a/359210 "Stylish")
 
 [Plain output using case](https://asciinema.org/a/359211 "Plain")
+
+[Json output using case](https://asciinema.org/a/359533 "Json")

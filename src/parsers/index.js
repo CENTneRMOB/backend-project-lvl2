@@ -1,9 +1,14 @@
-import yaml from 'js-yaml';
 import fs from 'fs';
 import path from 'path';
-import ini from 'ini';
+import jsonParser from './json.js';
+import yamlParser from './yaml.js';
+import iniParser from './ini.js';
 
-const extensionWithParsers = { '.json': JSON.parse, '.yaml': yaml.safeLoad, '.ini': ini.parse };
+const jsonParse = (content) => jsonParser(content);
+const yamlParse = (content) => yamlParser(content);
+const iniParse = (content) => iniParser(content);
+
+const extensionWithParsers = { '.json': jsonParse, '.yaml': yamlParse, '.ini': iniParse };
 
 export default (filePath1, filePath2) => {
   const getExtension = path.extname(filePath1);
