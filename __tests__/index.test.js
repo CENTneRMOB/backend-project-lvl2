@@ -1,27 +1,38 @@
+import { test, expect } from '@jest/globals';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import fs from 'fs';
 import path from 'path';
 import genDiff from '../index.js';
 
 const getFilePath = (name, extension) => {
-  const dirname = path.resolve('.', '__fixtures__');
-  return path.join(dirname, `${name}${extension}`);
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  return path.join(__dirname, '..', '__fixtures__', `${name}${extension}`);
 };
 
-describe.each`
-extension    | outputFormat    | expectedFormatedContent
-${'.json'} | ${'stylish'} | ${fs.readFileSync(getFilePath('stylish-result', '.txt'), 'utf-8')}
-${'.json'} | ${'plain'} | ${fs.readFileSync(getFilePath('plain-result', '.txt'), 'utf-8')}
-${'.json'} | ${'json'} | ${fs.readFileSync(getFilePath('json-result', '.txt'), 'utf-8')}
-${'.yaml'} | ${'stylish'} | ${fs.readFileSync(getFilePath('stylish-result', '.txt'), 'utf-8')}
-${'.yaml'} | ${'plain'} | ${fs.readFileSync(getFilePath('plain-result', '.txt'), 'utf-8')}
-${'.yaml'} | ${'json'} | ${fs.readFileSync(getFilePath('json-result', '.txt'), 'utf-8')}
-${'.ini'} | ${'stylish'} | ${fs.readFileSync(getFilePath('stylish-result', '.txt'), 'utf-8')}
-${'.ini'} | ${'plain'} | ${fs.readFileSync(getFilePath('plain-result', '.txt'), 'utf-8')}
-${'.ini'} | ${'json'} | ${fs.readFileSync(getFilePath('json-result', '.txt'), 'utf-8')}
-`('Should return correct difference between two files with equal extensions(.json, .yaml, .ini)', ({ extension, outputFormat, expectedFormatedContent }) => {
-  test(`Should return difference between two ${extension} in ${outputFormat} format`, () => {
-    const firstFilePath = getFilePath('file1', extension);
-    const secondFilePath = getFilePath('file2', extension);
-    expect(genDiff(firstFilePath, secondFilePath, outputFormat)).toBe(expectedFormatedContent);
+describe.each([['.json'], ['.yaml'], ['.ini']])('Test %s format files', (extension) => {
+  let stylishExpectedContent;
+  let plainExpectedContent;
+  let jsonExpectedContent;
+  let firstFilePath;
+  let secondFilePath;
+
+  beforeAll(() => {
+    stylishExpectedContent = fs.readFileSync(getFilePath('stylish-result', '.txt'), 'utf-8');
+    plainExpectedContent = fs.readFileSync(getFilePath('plain-result', '.txt'), 'utf-8');
+    jsonExpectedContent = fs.readFileSync(getFilePath('json-result', '.txt'), 'utf-8');
+    firstFilePath = getFilePath('file1', extension);
+    secondFilePath = getFilePath('file2', extension);
   });
+
+    test(`Should return difference between two ${extension} in stylish format`, () => {
+      expect(genDiff(firstFilePath, secondFilePath, 'stylish')).toBe(stylishExpectedContent);
+    });
+    test(`Should return difference between two ${extension} in plain format`, () => {
+      expect(genDiff(firstFilePath, secondFilePath, 'plain')).toBe(plainExpectedContent);
+    });
+    test(`Should return difference between two ${extension} in json format`, () => {
+      expect(genDiff(firstFilePath, secondFilePath, 'json')).toBe(jsonExpectedContent);
+    });
 });
