@@ -1,4 +1,4 @@
-# Backend level 2
+# CLI utility to get differences between two .json/.yaml/.ini files in different formats (look below to output using cases)
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/21e2e33d8ae4bdaf502c/maintainability)](https://codeclimate.com/github/CENTneRMOB/backend-project-lvl2/maintainability)
 
