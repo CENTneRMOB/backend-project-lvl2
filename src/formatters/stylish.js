@@ -12,7 +12,7 @@ const spase = ' ';
 
 const formatTheValue = (value, spases) => {
   if (_.isObject(value)) {
-    const elementsOfValue = _.toPairs(value);
+    const elementsOfValue = Object.entries(value);
     const mapped = elementsOfValue.map(([key, subValue]) => `${spase.repeat(spases + 6)}${key}: ${formatTheValue(subValue, spases + 4)}`);
 
     return `{\n${mapped.join('\n')}\n${spase.repeat(spases + 2)}}`;

@@ -1,17 +1,16 @@
 #!/usr/bin/env node
 
-import command from 'commander';
-import gendiff from '../index.js';
-
-const program = command;
+import fs from 'fs';
+import program from 'commander';
+import genDiff from '../index.js';
 
 program
-  .version('0.1.0')
+  .version(`${JSON.parse(fs.readFileSync('../package.json', 'utf-8')).version}`)
   .description('Compares two configuration files and shows a difference.')
   .arguments('<filepath1> <filepath2>')
   .option('-f, --format [type]', 'output format', 'stylish')
   .action((filepath1, filepath2) => {
-    console.log(gendiff(filepath1, filepath2, program.format));
+    console.log(genDiff(filepath1, filepath2, program.format));
   });
 
 program.parse(process.argv);

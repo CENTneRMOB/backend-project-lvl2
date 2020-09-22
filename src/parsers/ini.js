@@ -1,20 +1,15 @@
 import ini from 'ini';
 import _ from 'lodash';
 
-const stringNumberToNumber = (value) => (parseInt(value, 10) ? parseInt(value, 10) : value);
+const transformStrNumberToNumber = (value) => (parseFloat(value) ? parseFloat(value) : value);
 
-const correctedObject = (object) => {
-  const result = {};
-  const objectElements = _.toPairs(object);
-  objectElements.forEach(([key, value]) => {
-    if (!_.isObject(value)) {
-      result[key] = stringNumberToNumber(value);
-    } else {
-      result[key] = correctedObject(value);
-    }
-  });
+const correctObject = (object) => {
+  const result = Object.fromEntries(
+    Object.entries(object).map(([key, value]) => (_.isObject(value) ? [key, correctObject(value)]
+      : [key, transformStrNumberToNumber(value)])),
+  );
 
   return result;
 };
 
-export default (content) => correctedObject(ini.parse(content));
+export default (content) => correctObject(ini.parse(content));

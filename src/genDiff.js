@@ -1,6 +1,8 @@
+import fs from 'fs';
+import path from 'path';
 import _ from 'lodash';
-import getContent from './parsers/index.js';
-import formatter from './formatters/index.js';
+import chooseParser from './parsers/index.js';
+import formatDiffToOutputFormat from './formatters/index.js';
 
 const markers = {
   ADD: 'add',
@@ -11,12 +13,9 @@ const markers = {
 };
 
 const makeDiff = (obj1, obj2) => {
-  const keysOfObj1 = Object.keys(obj1);
-  const keysOfObj2 = Object.keys(obj2);
+  const unionOfKeys = _.union(Object.keys(obj1), Object.keys(obj2)).sort();
 
-  const unionOfKeys = _.uniq(keysOfObj1.concat(keysOfObj2)).sort();
-
-  const mappedKeys = unionOfKeys.map((key) => {
+  const differences = unionOfKeys.map((key) => {
     if (!_.has(obj2, key)) {
       return { type: markers.REMOVE, key, value: obj1[key] };
     }
@@ -29,7 +28,8 @@ const makeDiff = (obj1, obj2) => {
     if (value1 === value2) {
       return { type: markers.EQUAL, key, value: value1 };
     }
-    if (_.isObject(value1) && _.isObject(value2)) {
+    if ((_.isObject(value1) && _.isObject(value2))
+    && (!Array.isArray(value1) && !Array.isArray(value2))) {
       return { type: markers.NESTED, key, children: makeDiff(value1, value2) };
     }
 
@@ -38,11 +38,41 @@ const makeDiff = (obj1, obj2) => {
     };
   });
 
-  return mappedKeys;
+  return differences;
+};
+
+const readFile = (filePath) => {
+  const content = fs.readFileSync(filePath, 'utf-8');
+  return content;
+};
+
+const getExtension = (filePath) => {
+  const extension = path.extname(filePath);
+  return extension;
+};
+
+const getFullPath = (filePath) => {
+  const fullPath = path.resolve(process.cwd(), filePath);
+  return fullPath;
 };
 
 export default (filePath1, filePath2, outputFormat) => {
-  const [obj1, obj2] = getContent(filePath1, filePath2);
-  const diff = makeDiff(obj1, obj2);
-  return formatter(diff, outputFormat);
+  const fullPath1 = getFullPath(filePath1);
+  const fullPath2 = getFullPath(filePath2);
+
+  const content1 = readFile(fullPath1);
+  const content2 = readFile(fullPath2);
+
+  const fileFormat1 = getExtension(fullPath1);
+  const fileFormat2 = getExtension(fullPath2);
+
+  const parser1 = chooseParser(fileFormat1);
+  const parser2 = chooseParser(fileFormat2);
+
+  const object1 = parser1(content1);
+  const object2 = parser2(content2);
+
+  const differences = makeDiff(object1, object2);
+
+  return formatDiffToOutputFormat(differences, outputFormat);
 };
