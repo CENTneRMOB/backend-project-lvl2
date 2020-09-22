@@ -13,7 +13,7 @@ const markers = {
 };
 
 const makeDiff = (obj1, obj2) => {
-  const unionOfKeys = _.union(Object.keys(obj1), Object.keys(obj2)).sort();
+  const unionOfKeys = _.union(_.keys(obj1), _.keys(obj2)).sort();
 
   const differences = unionOfKeys.map((key) => {
     if (!_.has(obj2, key)) {
