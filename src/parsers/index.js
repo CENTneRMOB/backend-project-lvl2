@@ -4,7 +4,4 @@ import iniParser from './ini.js';
 
 const parsers = { '.json': jsonParser, '.yaml': yamlParser, '.ini': iniParser };
 
-export default (extension) => {
-  const parser = parsers[extension];
-  return parser;
-};
+export default (extension) => parsers[extension];

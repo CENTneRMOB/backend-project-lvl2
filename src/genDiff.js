@@ -28,8 +28,7 @@ const makeDiff = (obj1, obj2) => {
     if (value1 === value2) {
       return { type: markers.EQUAL, key, value: value1 };
     }
-    if ((_.isObject(value1) && _.isObject(value2))
-    && (!Array.isArray(value1) && !Array.isArray(value2))) {
+    if (_.isPlainObject(value1) && _.isPlainObject(value2)) {
       return { type: markers.NESTED, key, children: makeDiff(value1, value2) };
     }
 
@@ -41,20 +40,11 @@ const makeDiff = (obj1, obj2) => {
   return differences;
 };
 
-const readFile = (filePath) => {
-  const content = fs.readFileSync(filePath, 'utf-8');
-  return content;
-};
+const readFile = (filePath) => fs.readFileSync(filePath, 'utf-8');
 
-const getExtension = (filePath) => {
-  const extension = path.extname(filePath);
-  return extension;
-};
+const getExtension = (filePath) => path.extname(filePath);
 
-const getFullPath = (filePath) => {
-  const fullPath = path.resolve(process.cwd(), filePath);
-  return fullPath;
-};
+const getFullPath = (filePath) => path.resolve(process.cwd(), filePath);
 
 export default (filePath1, filePath2, outputFormat) => {
   const fullPath1 = getFullPath(filePath1);

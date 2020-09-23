@@ -11,7 +11,7 @@ const markers = {
 const spase = ' ';
 
 const formatTheValue = (value, spases) => {
-  if (_.isObject(value)) {
+  if (_.isPlainObject(value)) {
     const elementsOfValue = Object.entries(value);
     const mapped = elementsOfValue.map(([key, subValue]) => `${spase.repeat(spases + 6)}${key}: ${formatTheValue(subValue, spases + 4)}`);
 
