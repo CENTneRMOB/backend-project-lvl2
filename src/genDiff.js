@@ -40,21 +40,17 @@ const makeDiff = (obj1, obj2) => {
   return differences;
 };
 
-const readFile = (filePath) => fs.readFileSync(filePath, 'utf-8');
-
-const getExtension = (filePath) => path.extname(filePath);
-
 const getFullPath = (filePath) => path.resolve(process.cwd(), filePath);
 
 export default (filePath1, filePath2, outputFormat) => {
   const fullPath1 = getFullPath(filePath1);
   const fullPath2 = getFullPath(filePath2);
 
-  const content1 = readFile(fullPath1);
-  const content2 = readFile(fullPath2);
+  const content1 = fs.readFileSync(fullPath1, 'utf-8');
+  const content2 = fs.readFileSync(fullPath2, 'utf-8');
 
-  const fileFormat1 = getExtension(fullPath1);
-  const fileFormat2 = getExtension(fullPath2);
+  const fileFormat1 = path.extname(fullPath1);
+  const fileFormat2 = path.extname(fullPath2);
 
   const parser1 = chooseParser(fileFormat1);
   const parser2 = chooseParser(fileFormat2);
