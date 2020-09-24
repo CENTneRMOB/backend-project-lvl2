@@ -52,11 +52,11 @@ export default (filePath1, filePath2, outputFormat) => {
   const fileFormat1 = path.extname(fullPath1);
   const fileFormat2 = path.extname(fullPath2);
 
-  const parser1 = chooseParser(fileFormat1);
-  const parser2 = chooseParser(fileFormat2);
+  const parseFirstFile = chooseParser(fileFormat1);
+  const parseSecondFile = chooseParser(fileFormat2);
 
-  const object1 = parser1(content1);
-  const object2 = parser2(content2);
+  const object1 = parseFirstFile(content1);
+  const object2 = parseSecondFile(content2);
 
   const differences = makeDiff(object1, object2);
 
