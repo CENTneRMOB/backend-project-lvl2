@@ -8,7 +8,7 @@ const dirname = path.dirname(filename);
 
 const getFilePath = (name, extension) => path.join(dirname, '..', '__fixtures__', `${name}${extension}`);
 
-describe.each([['.json'], ['.yaml'], ['.ini']])('Test %s format files', (extension) => {
+describe.each([['.json'], ['.yml'], ['.ini']])('Test %s format files', (extension) => {
   let stylishExpectedContent;
   let plainExpectedContent;
   let jsonExpectedContent;

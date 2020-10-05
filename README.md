@@ -10,7 +10,7 @@
 
 [JSON using case](https://asciinema.org/a/353643 "GenDiff using case with JSON files")
 
-[YAML using case](https://asciinema.org/a/355591 "GenDiff using case with YAML files")
+[YAML using case](https://asciinema.org/a/355591 "GenDiff using case with YML files")
 
 [INI using case](https://asciinema.org/a/356117 "GenDiff using case with INI files")
 
