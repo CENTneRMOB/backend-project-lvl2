@@ -9,19 +9,12 @@ const dirname = path.dirname(filename);
 const getFilePath = (name, extension) => path.join(dirname, '..', '__fixtures__', `${name}${extension}`);
 
 describe.each([['.json'], ['.yml'], ['.ini']])('Test %s format files', (extension) => {
-  let stylishExpectedContent;
-  let plainExpectedContent;
-  let jsonExpectedContent;
-  let firstFilePath;
-  let secondFilePath;
+  const stylishExpectedContent = fs.readFileSync(getFilePath('stylish-result', '.txt'), 'utf-8');
+  const plainExpectedContent = fs.readFileSync(getFilePath('plain-result', '.txt'), 'utf-8');
+  const jsonExpectedContent = fs.readFileSync(getFilePath('json-result', '.txt'), 'utf-8');
+  const firstFilePath = getFilePath('file1', extension);
+  const secondFilePath = getFilePath('file2', extension);
 
-  beforeAll(() => {
-    stylishExpectedContent = fs.readFileSync(getFilePath('stylish-result', '.txt'), 'utf-8');
-    plainExpectedContent = fs.readFileSync(getFilePath('plain-result', '.txt'), 'utf-8');
-    jsonExpectedContent = fs.readFileSync(getFilePath('json-result', '.txt'), 'utf-8');
-    firstFilePath = getFilePath('file1', extension);
-    secondFilePath = getFilePath('file2', extension);
-  });
   test(`Should return difference between two ${extension} in stylish format`, () => {
     expect(genDiff(firstFilePath, secondFilePath, 'stylish')).toBe(stylishExpectedContent);
   });
