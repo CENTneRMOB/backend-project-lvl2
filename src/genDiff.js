@@ -40,7 +40,7 @@ const makeDiff = (obj1, obj2) => {
 
 const getFullPath = (filePath) => path.resolve(process.cwd(), filePath);
 
-export default (filePath1, filePath2, outputFormat) => {
+export default (filePath1, filePath2, outputFormat = 'stylish') => {
   const content1 = fs.readFileSync(getFullPath(filePath1), 'utf-8');
   const content2 = fs.readFileSync(getFullPath(filePath2), 'utf-8');
 
