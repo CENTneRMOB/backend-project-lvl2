@@ -13,9 +13,10 @@ const markers = {
 };
 
 const makeDiff = (obj1, obj2) => {
-  const unionOfKeys = _.sortBy(_.union(_.keys(obj1), _.keys(obj2)));
+  const unionOfKeys = _.union(_.keys(obj1), _.keys(obj2));
+  const sortedUnionOfKeys = _.sortBy(unionOfKeys);
 
-  return unionOfKeys.map((key) => {
+  return sortedUnionOfKeys.map((key) => {
     if (!_.has(obj2, key)) {
       return { type: markers.REMOVE, key, value: obj1[key] };
     }
@@ -25,11 +26,11 @@ const makeDiff = (obj1, obj2) => {
     const value1 = obj1[key];
     const value2 = obj2[key];
 
-    if (value1 === value2) {
-      return { type: markers.EQUAL, key, value: value1 };
-    }
     if (_.isPlainObject(value1) && _.isPlainObject(value2)) {
       return { type: markers.NESTED, key, children: makeDiff(value1, value2) };
+    }
+    if (value1 === value2) {
+      return { type: markers.EQUAL, key, value: value1 };
     }
 
     return {
@@ -39,10 +40,11 @@ const makeDiff = (obj1, obj2) => {
 };
 
 const getFullPath = (filePath) => path.resolve(process.cwd(), filePath);
+const readFile = (filePath) => fs.readFileSync(getFullPath(filePath), 'utf-8');
 
 export default (filePath1, filePath2, outputFormat = 'stylish') => {
-  const content1 = fs.readFileSync(getFullPath(filePath1), 'utf-8');
-  const content2 = fs.readFileSync(getFullPath(filePath2), 'utf-8');
+  const content1 = readFile(filePath1);
+  const content2 = readFile(filePath2);
 
   const fileFormat1 = _.trim(path.extname(filePath1), '.');
   const fileFormat2 = _.trim(path.extname(filePath2), '.');

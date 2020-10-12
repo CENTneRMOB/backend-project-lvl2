@@ -6,14 +6,18 @@ import genDiff from '../index.js';
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
-const getFilePath = (name, extension) => path.join(dirname, '..', '__fixtures__', `${name}${extension}`);
+const getFullFileName = (name, extension) => `${name}${extension}`;
+const getFixturePath = (fileName) => path.join(dirname, '..', '__fixtures__', fileName);
+const readFile = (fileName) => fs.readFileSync(getFixturePath(fileName), 'utf-8');
 
 describe.each([['.json'], ['.yml'], ['.ini']])('Test %s format files', (extension) => {
-  const stylishExpectedContent = fs.readFileSync(getFilePath('stylish-result', '.txt'), 'utf-8');
-  const plainExpectedContent = fs.readFileSync(getFilePath('plain-result', '.txt'), 'utf-8');
-  const jsonExpectedContent = fs.readFileSync(getFilePath('json-result', '.txt'), 'utf-8');
-  const firstFilePath = getFilePath('file1', extension);
-  const secondFilePath = getFilePath('file2', extension);
+  const stylishExpectedContent = readFile('stylish-result.txt');
+  const plainExpectedContent = readFile('plain-result.txt');
+  const jsonExpectedContent = readFile('json-result.txt');
+  const firstFileName = getFullFileName('file1', extension);
+  const secondFileName = getFullFileName('file2', extension);
+  const firstFilePath = getFixturePath(firstFileName);
+  const secondFilePath = getFixturePath(secondFileName);
 
   test(`Should return difference between two ${extension} in stylish format`, () => {
     expect(genDiff(firstFilePath, secondFilePath, 'stylish')).toBe(stylishExpectedContent);

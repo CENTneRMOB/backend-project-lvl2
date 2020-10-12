@@ -6,11 +6,6 @@ const isNumber = (value) => {
   return !Number.isNaN(number);
 };
 
-const printValue = (value) => {
-  const num = parseFloat(value);
-  return isNumber(num) ? num : value;
-};
-
 const transformObject = (object) => {
   const entries = Object.entries(object);
   const transformedEntries = entries.map(([key, value]) => {
@@ -18,7 +13,7 @@ const transformObject = (object) => {
       return [key, transformObject(value)];
     }
     if (isNumber(value)) {
-      return [key, printValue(value)];
+      return [key, parseFloat(value)];
     }
     return [key, value];
   });

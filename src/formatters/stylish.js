@@ -1,43 +1,30 @@
 import _ from 'lodash';
 
-const markers = {
-  ADD: 'add',
-  REMOVE: 'remove',
-  EQUAL: 'equal',
-  CHANGED: 'changed',
-  NESTED: 'nested',
-};
-
 const spase = ' ';
+const getIndent = (depth) => `${spase.repeat(depth)}`;
+const depthStep = 2;
 
-const formatTheValue = (value, spases) => {
-  if (_.isPlainObject(value)) {
-    const elementsOfValue = Object.entries(value);
-    const mapped = elementsOfValue.map(([key, subValue]) => `${spase.repeat(spases + 6)}${key}: ${formatTheValue(subValue, spases + 4)}`);
-
-    return `{\n${mapped.join('\n')}\n${spase.repeat(spases + 2)}}`;
+const tranformValueToString = (value, depth) => {
+  if (!_.isPlainObject(value)) {
+    return value;
   }
 
-  return value;
+  const mappedValueElements = Object.entries(value).map(([key, subValue]) => `${getIndent(depth + depthStep * 3)}${key}: ${tranformValueToString(subValue, depth + depthStep * 2)}`);
+
+  return `{\n${mappedValueElements.join('\n')}\n${getIndent(depth + depthStep)}}`;
 };
 
 export default (diff) => {
-  const iter = (node, spases) => node.map((item) => {
+  const iter = (node, depth) => node.map((item) => {
+    const mapping = {
+      add: (key) => `${getIndent(depth)}+ ${key}: ${tranformValueToString(item.value, depth)}`,
+      remove: (key) => `${getIndent(depth)}- ${key}: ${tranformValueToString(item.value, depth)}`,
+      equal: (key) => `${getIndent(depth)}  ${key}: ${tranformValueToString(item.value, depth)}`,
+      changed: (key) => `${getIndent(depth)}- ${key}: ${tranformValueToString(item.value1, depth)}\n${getIndent(depth)}+ ${key}: ${tranformValueToString(item.value2, depth)}`,
+      nested: (key) => `${getIndent(depth)}  ${key}: {\n${iter(item.children, depth + depthStep * 2).join('\n')}\n${getIndent(depth + depthStep)}}`,
+    };
     const { type, key } = item;
-    if (type === markers.REMOVE) {
-      return `${spase.repeat(spases)}- ${key}: ${formatTheValue(item.value, spases)}`;
-    }
-    if (type === markers.ADD) {
-      return `${spase.repeat(spases)}+ ${key}: ${formatTheValue(item.value, spases)}`;
-    }
-    if (type === markers.EQUAL) {
-      return `${spase.repeat(spases)}  ${key}: ${formatTheValue(item.value, spases)}`;
-    }
-    if (type === markers.CHANGED) {
-      return `${spase.repeat(spases)}- ${key}: ${formatTheValue(item.value1, spases)}\n${spase.repeat(spases)}+ ${key}: ${formatTheValue(item.value2, spases)}`;
-    }
-
-    return `${spase.repeat(spases)}  ${key}: {\n${iter(item.children, spases + 4).join('\n')}\n${spase.repeat(spases + 2)}}`;
+    return mapping[type](key);
   });
-  return `{\n${iter(diff, 2).join('\n')}\n}`;
+  return `{\n${iter(diff, depthStep).join('\n')}\n}`;
 };
