@@ -11,9 +11,9 @@ const getFixturePath = (fileName) => path.join(dirname, '..', '__fixtures__', fi
 const readFile = (fileName) => fs.readFileSync(getFixturePath(fileName), 'utf-8');
 
 describe.each([['.json'], ['.yml'], ['.ini']])('Test %s format files', (extension) => {
-  const stylishExpectedContent = readFile('stylish-result.txt');
-  const plainExpectedContent = readFile('plain-result.txt');
-  const jsonExpectedContent = readFile('json-result.txt');
+  const stylishExpectedContent = readFile('stylish-result.txt', 'utf-8');
+  const plainExpectedContent = readFile('plain-result.txt', 'utf-8');
+  const jsonExpectedContent = readFile('json-result.txt', 'utf-8');
   const firstFileName = getFullFileName('file1', extension);
   const secondFileName = getFullFileName('file2', extension);
   const firstFilePath = getFixturePath(firstFileName);
