@@ -1,23 +1,19 @@
 import ini from 'ini';
 import _ from 'lodash';
 
-const isNumber = (value) => {
+const isNumeric = (value) => {
   const number = parseFloat(value);
   return !Number.isNaN(number);
 };
 
-const transformObject = (object) => {
-  const entries = Object.entries(object);
-  const transformedEntries = entries.map(([key, value]) => {
-    if (_.isObject(value)) {
-      return [key, transformObject(value)];
-    }
-    if (isNumber(value)) {
-      return [key, parseFloat(value)];
-    }
-    return [key, value];
-  });
-  return Object.fromEntries(transformedEntries);
-};
+const transformObject = (object) => _.mapValues(object, (value) => {
+  if (_.isObject(value)) {
+    return transformObject(value);
+  }
+  if (isNumeric(value)) {
+    return parseFloat(value);
+  }
+  return value;
+});
 
 export default (content) => transformObject(ini.parse(content));
