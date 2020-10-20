@@ -1,30 +1,48 @@
 import _ from 'lodash';
 
-const getIndent = (depth) => ' '.repeat(depth);
-const depthStep = 2;
+const getIndent = (space) => ' '.repeat(space);
+const indentStep = 2;
 
-const stringify = (value, depth) => {
+const stringify = (value, valueDepth) => {
   if (!_.isPlainObject(value)) {
     return value;
   }
 
+  const childNodeDepth = valueDepth + indentStep;
   const mappedValueElements = Object.entries(value)
-    .map(([key, subValue]) => `${getIndent(depth + depthStep * 3)}${key}: ${stringify(subValue, depth + depthStep * 2)}`);
+    .map(([key, subValue]) => `${getIndent(childNodeDepth + indentStep)}${key}: ${stringify(subValue, childNodeDepth + indentStep)}`);
 
-  return `{\n${mappedValueElements.join('\n')}\n${getIndent(depth + depthStep)}}`;
+  return [
+    '{',
+    ...mappedValueElements,
+    `${getIndent(valueDepth)}}`,
+  ].join('\n');
 };
 
 export default (diff) => {
-  const iter = (node, depth) => node.map((item) => {
+  const iter = (node, nodeDepth) => node.flatMap((item) => {
+    const lineIndent = getIndent(nodeDepth);
+    const innerLineDepth = nodeDepth + indentStep;
     const mapping = {
-      add: (key) => `${getIndent(depth)}+ ${key}: ${stringify(item.value, depth)}`,
-      remove: (key) => `${getIndent(depth)}- ${key}: ${stringify(item.value, depth)}`,
-      equal: (key) => `${getIndent(depth)}  ${key}: ${stringify(item.value, depth)}`,
-      changed: (key) => `${getIndent(depth)}- ${key}: ${stringify(item.value1, depth)}\n${getIndent(depth)}+ ${key}: ${stringify(item.value2, depth)}`,
-      nested: (key) => `${getIndent(depth)}  ${key}: {\n${iter(item.children, depth + depthStep * 2).join('\n')}\n${getIndent(depth + depthStep)}}`,
+      add: (key) => `${lineIndent}+ ${key}: ${stringify(item.value, innerLineDepth)}`,
+      remove: (key) => `${lineIndent}- ${key}: ${stringify(item.value, innerLineDepth)}`,
+      equal: (key) => `${lineIndent}  ${key}: ${stringify(item.value, innerLineDepth)}`,
+      changed: (key) => [
+        `${lineIndent}- ${key}: ${stringify(item.value1, innerLineDepth)}`,
+        `${lineIndent}+ ${key}: ${stringify(item.value2, innerLineDepth)}`,
+      ],
+      nested: (key) => [
+        `${lineIndent}  ${key}: {`,
+        ...iter(item.children, innerLineDepth + indentStep),
+        `${getIndent(innerLineDepth)}}`,
+      ],
     };
     const { type, key } = item;
     return mapping[type](key);
   });
-  return `{\n${iter(diff, depthStep).join('\n')}\n}`;
+  return [
+    '{',
+    ...iter(diff, indentStep),
+    '}',
+  ].join('\n');
 };
