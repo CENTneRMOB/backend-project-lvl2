@@ -11,19 +11,24 @@ const transformValueToString = (value) => {
   return value;
 };
 
-export default (diff) => {
+const mapping = {
+  add: (keys, item) => `Property '${keys.join('.')}' was added with value: ${transformValueToString(item.value)}`,
+  remove: (keys) => `Property '${keys.join('.')}' was removed`,
+  equal: () => [],
+  changed: (keys, item) => `Property '${keys.join('.')}' was updated. From ${transformValueToString(item.value1)} to ${transformValueToString(item.value2)}`,
+};
+
+const plain = (diff) => {
   const iter = (node, parents) => node.flatMap((item) => {
-    const mapping = {
-      add: (keys) => `Property '${keys.join('.')}' was added with value: ${transformValueToString(item.value)}`,
-      remove: (keys) => `Property '${keys.join('.')}' was removed`,
-      equal: () => null,
-      changed: (keys) => `Property '${keys.join('.')}' was updated. From ${transformValueToString(item.value1)} to ${transformValueToString(item.value2)}`,
-      nested: (keys, key) => iter(item.children, [...parents, key]),
-    };
-    const { type, key } = item;
-    const keys = [...parents, key];
-    return mapping[type](keys, key);
+    const keys = [...parents, item.key];
+    if (item.type !== 'nested') {
+      return mapping[item.type](keys, item);
+    }
+
+    return iter(item.children, keys);
   });
 
-  return iter(diff, []).filter((item) => item).join('\n');
+  return iter(diff, []).filter(Boolean).join('\n');
 };
+
+export default plain;
