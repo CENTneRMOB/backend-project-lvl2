@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const transformValueToString = (value) => {
+const stringify = (value) => {
   if (_.isObject(value)) {
     return '[complex value]';
   }
@@ -11,15 +11,17 @@ const transformValueToString = (value) => {
   return value;
 };
 
+const stringifyKeys = (keys) => keys.join('.');
+
 const mapping = {
-  add: (keys, item) => `Property '${keys.join('.')}' was added with value: ${transformValueToString(item.value)}`,
-  remove: (keys) => `Property '${keys.join('.')}' was removed`,
+  add: (keys, item) => `Property '${stringifyKeys(keys)}' was added with value: ${stringify(item.value)}`,
+  remove: (keys) => `Property '${stringifyKeys(keys)}' was removed`,
   equal: () => [],
-  changed: (keys, item) => `Property '${keys.join('.')}' was updated. From ${transformValueToString(item.value1)} to ${transformValueToString(item.value2)}`,
+  changed: (keys, item) => `Property '${stringifyKeys(keys)}' was updated. From ${stringify(item.value1)} to ${stringify(item.value2)}`,
 };
 
 const plain = (diff) => {
-  const iter = (node, parents) => node.flatMap((item) => {
+  const iter = (nodeItems, parents) => nodeItems.flatMap((item) => {
     const keys = [...parents, item.key];
     if (item.type !== 'nested') {
       return mapping[item.type](keys, item);
@@ -28,7 +30,7 @@ const plain = (diff) => {
     return iter(item.children, keys);
   });
 
-  return iter(diff, []).filter(Boolean).join('\n');
+  return iter(diff, []).join('\n');
 };
 
 export default plain;
