@@ -18,16 +18,13 @@ const mapping = {
   remove: (keys) => `Property '${stringifyKeys(keys)}' was removed`,
   equal: () => [],
   changed: (keys, item) => `Property '${stringifyKeys(keys)}' was updated. From ${stringify(item.value1)} to ${stringify(item.value2)}`,
+  nested: (keys, item, iter) => iter(item.children, keys),
 };
 
 const plain = (diff) => {
   const iter = (nodeItems, parents) => nodeItems.flatMap((item) => {
     const keys = [...parents, item.key];
-    if (item.type !== 'nested') {
-      return mapping[item.type](keys, item);
-    }
-
-    return iter(item.children, keys);
+    return mapping[item.type](keys, item, iter);
   });
 
   return iter(diff, []).join('\n');

@@ -19,7 +19,7 @@ const stringify = (value, depth) => {
   }
   const innerDepth = depth + indentStep;
   const valueEntries = Object.entries(value)
-    .map(([key, subValue]) => `${getIndent(innerDepth)}${key}: ${stringify(subValue, innerDepth)}`);
+    .map(([key, val]) => `${getIndent(innerDepth)}${key}: ${stringify(val, innerDepth)}`);
 
   return [
     '{',
@@ -36,20 +36,16 @@ const mapping = {
     `${putOperationSign(getIndent(depth), '-')}${node.key}: ${stringify(node.value1, depth)}`,
     `${putOperationSign(getIndent(depth), '+')}${node.key}: ${stringify(node.value2, depth)}`,
   ],
+  nested: (item, nodeDepth, iter) => [
+    `${getIndent(nodeDepth)}${item.key}: {`,
+    ...iter(item.children, nodeDepth + indentStep),
+    `${getIndent(nodeDepth)}}`,
+  ],
 };
 
 const stylish = (diff) => {
-  const iter = (nodeItems, nodeDepth) => nodeItems.flatMap((item) => {
-    if (item.type !== 'nested') {
-      return mapping[item.type](item, nodeDepth);
-    }
-
-    return [
-      `${getIndent(nodeDepth)}${item.key}: {`,
-      ...iter(item.children, nodeDepth + indentStep),
-      `${getIndent(nodeDepth)}}`,
-    ];
-  });
+  const iter = (nodeItems, nodeDepth) => nodeItems
+    .flatMap((item) => mapping[item.type](item, nodeDepth, iter));
 
   return [
     '{',
