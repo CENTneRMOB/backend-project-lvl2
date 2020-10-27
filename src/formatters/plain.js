@@ -11,20 +11,20 @@ const stringify = (value) => {
   return value;
 };
 
-const stringifyKeys = (keys) => keys.join('.');
+const stringifyPath = (path) => path.join('.');
 
 const mapping = {
-  add: (keys, item) => `Property '${stringifyKeys(keys)}' was added with value: ${stringify(item.value)}`,
-  remove: (keys) => `Property '${stringifyKeys(keys)}' was removed`,
+  add: (path, item) => `Property '${stringifyPath(path)}' was added with value: ${stringify(item.value)}`,
+  remove: (path) => `Property '${stringifyPath(path)}' was removed`,
   equal: () => [],
-  changed: (keys, item) => `Property '${stringifyKeys(keys)}' was updated. From ${stringify(item.value1)} to ${stringify(item.value2)}`,
-  nested: (keys, item, iter) => iter(item.children, keys),
+  changed: (path, item) => `Property '${stringifyPath(path)}' was updated. From ${stringify(item.value1)} to ${stringify(item.value2)}`,
+  nested: (path, item, iter) => iter(item.children, path),
 };
 
 const plain = (diff) => {
   const iter = (nodeItems, parents) => nodeItems.flatMap((item) => {
-    const keys = [...parents, item.key];
-    return mapping[item.type](keys, item, iter);
+    const path = [...parents, item.key];
+    return mapping[item.type](path, item, iter);
   });
 
   return iter(diff, []).join('\n');
