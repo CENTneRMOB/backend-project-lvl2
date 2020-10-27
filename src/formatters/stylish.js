@@ -14,7 +14,7 @@ const stringify = (value, depth) => {
   return [
     '{',
     ...valueEntries,
-    `${getIndent(depth + indentStep)}}`,
+    `${getIndent(innerDepth)}}`,
   ].join('\n');
 };
 
