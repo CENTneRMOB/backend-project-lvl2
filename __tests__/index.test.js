@@ -6,7 +6,6 @@ import genDiff from '../index.js';
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
-const getFullFileName = (name, extension) => `${name}${extension}`;
 const getFixturePath = (fileName) => path.join(dirname, '..', '__fixtures__', fileName);
 const readFile = (fileName) => fs.readFileSync(getFixturePath(fileName), 'utf-8');
 
@@ -14,12 +13,13 @@ describe.each([['.json'], ['.yml'], ['.ini']])('Test %s format files', (extensio
   const stylishExpectedContent = readFile('stylish-result.txt', 'utf-8');
   const plainExpectedContent = readFile('plain-result.txt', 'utf-8');
   const jsonExpectedContent = readFile('json-result.txt', 'utf-8');
-  const firstFileName = getFullFileName('file1', extension);
-  const secondFileName = getFullFileName('file2', extension);
+  const firstFileName = `file1${extension}`;
+  const secondFileName = `file2${extension}`;
   const firstFilePath = getFixturePath(firstFileName);
   const secondFilePath = getFixturePath(secondFileName);
 
-  test(`Should return difference between two ${extension} in stylish format`, () => {
+  test(`Should return difference between two ${extension} in stylish format and it should be default output format`, () => {
+    expect(genDiff(firstFilePath, secondFilePath)).toBe(stylishExpectedContent);
     expect(genDiff(firstFilePath, secondFilePath, 'stylish')).toBe(stylishExpectedContent);
   });
 
