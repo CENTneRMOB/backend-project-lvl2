@@ -1,5 +1,5 @@
 {
-  "name": "@centnermob/backend-project-lvl2",
+  "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "CLI utility for creating  and getting differences between two same format(.json, .yml, .ini) files in  and output this differences in 3 formats( stylish, plain, json).",
   "main": "index.js",
